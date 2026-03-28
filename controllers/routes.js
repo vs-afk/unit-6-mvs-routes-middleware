@@ -17,7 +17,8 @@ let db = [
 	{ email: "paul@codecademy.com", password: "dbLocal"},
 	{ email: "scott@gmail.com", password: "Scotti3"},
 	{ email: "arush@google.com", password: "password"},
-	{ email: "rus@cyberexpert.com", password: "lakdh&)ldkx-dakhjlf"}
+	{ email: "rus@cyberexpert.com", password: "lakdh&)ldkx-dakhjlf"},
+	{ email: "vince@gmail.com", password: "admin"}
 ]
 
 router.get("/health", (req, res) => {
@@ -57,13 +58,33 @@ router.post("/register", (req, res) => {
 
 router.post("/login", (req, res) => {
 	console.log(req.body)
-	let nuUser
+	console.log(req.headers)
+	let nuUser = req.body
 	
-	for (let i = 0; i > db; i++) {
-		
-
-	}
+let foundUser = db.find((user) => {
+    return user.email === nuUser.email
 })
+
+if (!foundUser) {
+    return res.status(404).json({
+    message: "User not found"
+    })
+}
+
+if (foundUser.password !== nuUser.password) {
+    return res.status(401).json({
+    message: "Wrong password"
+    })
+}
+
+return res.status(200).json({
+    message: "User logged in"
+})
+})
+
+
+
+
 /* 
 	? Challenge
 	* create a POST route called /login
