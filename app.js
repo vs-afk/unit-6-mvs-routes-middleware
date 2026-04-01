@@ -3,6 +3,7 @@ const express = require("express")
 const app = express()
 
 // import any exports from elsewhere we need to use
+const authRoutes = require("./controllers/auth")
 const routes = require("./controllers/routes")
 const requestTimestamp = require("./middlewares/timestamp")
 
@@ -15,7 +16,16 @@ const HOST = process.env.HOST
 app.use(express.json())
 // ^^^ this middleware will parse our request body so we can access it
 app.use(requestTimestamp)
-app.use(routes)
+app.use(authRoutes)
+// how to make our routes become subroutes
+app.use("/v1", routes)
+// ? How do we handle routes which do not exist?
+// Catch all middleware if a request doesn't match with a route
+app.use((req, res) => {
+	res.status(404).json({
+		message: "You lost?"
+	})
+})
 
 app.listen(PORT, HOST, () => {
 	console.log(`[server] listening on ${HOST}:${PORT}`)
